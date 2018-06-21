@@ -12,20 +12,19 @@ var ObjectId = require("mongodb").ObjectID;
 
 app.use(express.static("./public"));
 //留言板列表
-app.get("/",function(req,res,next){
-    db.getAllCount("message",function(count){
-    	console.log(count)
-    	res.render("index",{
-          "pageamount":Math.ceil(count/20)
-    	});
-    });
+// app.get("/",function(req,res,next){
+//     db.getAllCount("message",function(count){
+//     	console.log(count)
+//     	res.render("index",{
+//           "pageamount":Math.ceil(count/20)
+//     	});
+//     });
  
-});
+// });
 //获取留言内容
 app.get("/get/message",function(req,res,next){
  var page = parseInt(req.query.page);
- db.find("blog",{},{"sort":{"time":-1},"pageamount":20,"page":page},function(err,result){
-
+ db.find("blog",{},{"sort":{"time":-1},"pageamount":5,"page":page},function(err,result){
     res.json({"success":true,
               "content":result});
 

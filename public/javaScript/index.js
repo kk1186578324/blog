@@ -37,14 +37,19 @@ var module = {
                 look:data[i].look
                })
                $("#content-wrap").append($(html));
-               
-            
-
-
-
 
              }
+
+             var compiled = _.template($("#page").html());
+			 var html = compiled(data);
+		     $("#footer").append($(html));
      		}
+
+
+
+
+
+
      	})
        
 
