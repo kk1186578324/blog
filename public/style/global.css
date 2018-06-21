@@ -1,0 +1,46 @@
+.form-password{
+	margin-top:20px;
+}
+.form-btn{
+	margin-top:20px;
+	width: 200px;
+	text-align: center;
+}
+body{
+	background: #00802247;
+}
+.content{
+	background: white;
+	width: 1200px;
+	min-height: 100%;
+	margin: 0 auto;
+
+}
+.row-wrap{
+	padding: 0 10px;
+}
+.head-title{
+	float: left;
+	font-size: 14px;
+}
+.head-wrap{
+
+}
+.row-left{
+	/*margin-left:10px;*/
+}
+.group-title{
+	margin-top:20px;
+}
+.media-object.img{
+	width: 60px;
+}
+.list-group-item-text.text{
+	padding-bottom: 10px;
+	border-bottom:1px solid #ccc;
+	margin-bottom: 10px;
+}
+.glyphicon.icon{
+	margin-left:80px;
+	font-size:12px;
+}
