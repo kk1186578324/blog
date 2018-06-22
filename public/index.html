@@ -223,15 +223,18 @@
 <script type="text/template" id="content">
 
 <div class="list-group ">
-    <a href="#" class="list-group-item list-group-item-info">
+    <div href="#" class="list-group-item list-group-item-info">
     <h4 class="list-group-item-heading"><%= title%></h4>
     <p class="list-group-item-text text"><%= content%></p>
      <p><span class="glyphicon glyphicon-user icon" aria-hidden="true"><%= name%></span>
 
         <span class="glyphicon glyphicon-time icon" aria-hidden="true"><%= time%></span>
         <span class="glyphicon glyphicon-pencil icon" aria-hidden="true"><%= look%>条评论</span>
+        <a href="/delete?id=<%= id%>" class="label label-danger delete">删除</a>
+       
      </p>
-    </a>
+
+    </div>
 </div>
 	
 
@@ -241,22 +244,20 @@
 
 
    <ul class="pagination">
-    <li class="disabled">
+    <li class="page-option" data-page="odd">
       <a href="#" aria-label="Previous">
       <span aria-hidden="true">&laquo;</span>
     </a>
     </li>
     <% _.each(obj,function(e,i,a){%>
        <%if(i==0){%>
-        <li class="active"><a href="#"><%= i+1%><span class="sr-only">(current)</span></a></li>
-
+        <li class="active page-option" data-page="<%=i+1%>"><a href="#"><%= i+1%><span class="sr-only">(current)</span></a></li>
        <%}else{%> 
-
-      <li><a href="#"><%= i+1%><span class="sr-only">(current)</span></a></li>
+      <li class="page-option" data-page="<%=i+1%>"><a><%= i+1%><span class="sr-only">(current)</span></a></li>
        <%}%>
      
     <%})%>
-     <li>
+     <li class="page-option" data-page="add">
        <a href="#" aria-label="Next">
         <span aria-hidden="true">&raquo;</span>
       </a>
