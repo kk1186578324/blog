@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>小小博客</title>
     <link href="../css/bootstrap.min.css" rel="stylesheet"/>
+ <link rel="stylesheet" href="../css/cropper.min.css">
+    <link rel="stylesheet" href="../css/ImgCropping.css">
     <link rel="stylesheet" href="../style/global.css">
 </head>
 
@@ -59,10 +61,10 @@
                             <ul class="dropdown-menu">
                                 <form class="navbar-form navbar-left" role="search">
                                     <div class="form-group">
-                                        <input type="text" class="form-control form-username" placeholder="用户名">
-                                        <input type="text" class="form-control form-password" placeholder="密码">
+                                        <input type="text" class="form-control form-username" id="userName" name="userName" placeholder="用户名">
+                                        <input type="text" class="form-control form-password" id="password" name="password" placeholder="密码">
                                     </div>
-                                    <button type="submit" class="btn btn-success form-btn">登录</button>
+                                    <button type="button" class="btn btn-success form-btn submit-btn">登录</button>
                                     <a href="/views/regist.html">
                                         <button type="button" class="btn btn-warning form-btn">注册</button>
                                     </a>
@@ -82,7 +84,43 @@
             <div class="row head-wrap">
                 <div class="col-sm-6 col-md-8">
                     <div class="thumbnail">
-                        <img src="../images/head.jpeg" alt="...">
+
+                        <!-- <img src="../images/head.jpeg" alt="..."> -->
+                       
+                        <div style="width: 160px;height:160px;" id="replaceImg">
+                            <img id="finalImg" src="../images/head.jpeg" width="100%">
+
+                        </div>
+                        <div style="display: none" class="tailoring-container">
+                            <div class="black-cloth" onclick="closeTailor(this)"></div>
+                            <div class="tailoring-content">
+                                    <div class="tailoring-content-one">
+                                        <label title="上传图片" for="chooseImg" class="l-btn choose-btn">
+                                            <input type="file" accept="image/jpg,image/jpeg,image/png" name="file" id="chooseImg" class="hidden" onchange="selectImg(this)">
+                                            选择图片
+                                        </label>
+                                        <div class="close-tailoring"  onclick="closeTailor(this)">×</div>
+                                    </div>
+                                    <div class="tailoring-content-two">
+                                        <div class="tailoring-box-parcel">
+                                            <img id="tailoringImg">
+                                        </div>
+                                        <div class="preview-box-parcel">
+                                            <p>图片预览：</p>
+                                            <div class="square previewImg"></div>
+                                            <div class="circular previewImg"></div>
+                                        </div>
+                                    </div>
+                                    <div class="tailoring-content-three">
+                                        <button class="l-btn cropper-reset-btn">复位</button>
+                                        <button class="l-btn cropper-rotate-btn">旋转</button>
+                                        <button class="l-btn cropper-scaleX-btn">换向</button>
+                                        <button class="l-btn sureCut" id="sureCut">确定</button>
+                                    </div>
+                                </div>
+                        </div>
+
+                         <!-- <button id="replaceImg" class="l-btn">更换图片</button> -->
                         <h4 class="head-title">我要个性网QQ头像频道的QQ男生头像栏目,带字、超拽等各种帅气男生头像一应俱全。</h4>
 
                     </div>
@@ -107,7 +145,7 @@
                     <label for="title" class="col-sm-3 control-label">标题</label>
 
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="title" name="title" placeholder="姓名">
+                        <input type="text" class="form-control" id="title" name="title" placeholder="标题">
                     </div>
                 </div>
                 <div class="form-group">
@@ -274,5 +312,120 @@
 <script src="../js/jquery-1.11.3.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
 <script type="text/javascript" src="../js/underscore-noflect.js"></script>
+<script src="../js/cropper.min.js"></script>
 <script src="../javaScript/index.js"></script>
+<script>
 
+    //弹出框水平垂直居中
+    (window.onresize = function () {
+        var win_height = $(window).height();
+        var win_width = $(window).width();
+        if (win_width <= 768){
+            $(".tailoring-content").css({
+                "top": (win_height - $(".tailoring-content").outerHeight())/2,
+                "left": 0
+            });
+        }else{
+            $(".tailoring-content").css({
+                "top": (win_height - $(".tailoring-content").outerHeight())/2,
+                "left": (win_width - $(".tailoring-content").outerWidth())/2
+            });
+        }
+    })();
+
+    //弹出图片裁剪框
+    $("#replaceImg").on("click",function () {
+        $(".tailoring-container").toggle();
+    });
+    //图像上传
+    function selectImg(file) {
+
+        console.log(file);
+        // if (!file.files || !file.files[0]){
+        //     return;
+        // }
+        var reader = new FileReader();
+        reader.onload = function (evt) {
+            console.log(evt);
+            var replaceSrc = evt.target.result;
+
+            $.post("/dosetavatar",{
+               "base64url":replaceSrc,
+        
+            },function(result){
+
+                if(result.success){
+
+                  module.initGetMsg();
+                  module.initPageOption();
+
+                }
+
+            })
+
+
+            //更换cropper的图片
+            $('#tailoringImg').cropper('replace', replaceSrc,false);//默认false，适应高度，不失真
+        }
+        reader.readAsDataURL(file.files[0]);
+    }
+    //cropper图片裁剪
+    $('#tailoringImg').cropper({
+        aspectRatio: 1/1,//默认比例
+        preview: '.previewImg',//预览视图
+        guides: false,  //裁剪框的虚线(九宫格)
+        autoCropArea: 0.5,  //0-1之间的数值，定义自动剪裁区域的大小，默认0.8
+        movable: false, //是否允许移动图片
+        dragCrop: true,  //是否允许移除当前的剪裁框，并通过拖动来新建一个剪裁框区域
+        movable: true,  //是否允许移动剪裁框
+        resizable: true,  //是否允许改变裁剪框的大小
+        zoomable: false,  //是否允许缩放图片大小
+        mouseWheelZoom: false,  //是否允许通过鼠标滚轮来缩放图片
+        touchDragZoom: true,  //是否允许通过触摸移动来缩放图片
+        rotatable: true,  //是否允许旋转图片
+        crop: function(e) {
+            // 输出结果数据裁剪图像。
+        }
+    });
+    //旋转
+    $(".cropper-rotate-btn").on("click",function () {
+        $('#tailoringImg').cropper("rotate", 45);
+    });
+    //复位
+    $(".cropper-reset-btn").on("click",function () {
+        $('#tailoringImg').cropper("reset");
+    });
+    //换向
+    var flagX = true;
+    $(".cropper-scaleX-btn").on("click",function () {
+        if(flagX){
+            $('#tailoringImg').cropper("scaleX", -1);
+            flagX = false;
+        }else{
+            $('#tailoringImg').cropper("scaleX", 1);
+            flagX = true;
+        }
+        flagX != flagX;
+    });
+
+    //裁剪后的处理
+    $("#sureCut").on("click",function () {
+        if ($("#tailoringImg").attr("src") == null ){
+            return false;
+        }else{
+            var cas = $('#tailoringImg').cropper('getCroppedCanvas');//获取被裁剪后的canvas
+            var base64url = cas.toDataURL('image/png'); //转换为base64地址形式
+            $("#finalImg").prop("src",base64url);//显示为图片的形式
+
+            //关闭裁剪框
+            closeTailor();
+        }
+    });
+    //关闭裁剪框
+    function closeTailor() {
+        $(".tailoring-container").toggle();
+    }
+
+
+
+</script>

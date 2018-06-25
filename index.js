@@ -2,6 +2,8 @@ var express = require("express");
 var app = express();
 var db = require("./model/db.js");
 var formidable = require("formidable");
+var bodyParser = require('body-parser');
+var urlencodedParser = bodyParser.urlencoded(); 
 
 var router = require("./router/router.js")
 
@@ -13,7 +15,6 @@ var ObjectId = require("mongodb").ObjectID;
 //静态
 
 app.use(express.static("./public"));
-<<<<<<< HEAD
 // 留言板列表
 app.get("/page",function(req,res,next){
     db.getAllCount("blog",function(count){
@@ -21,21 +22,10 @@ app.get("/page",function(req,res,next){
     	res.send({
           "pageamount":Math.ceil(count/6)
     	});
-=======
-//留言板列表
-app.get("/page", function (req, res, next) {
-    db.getAllCount("blog", function (count) {
-        console.log(count)
+    })
+  })
 
 
-        res.send({"pageamount": parseInt(count / 5)})
-        // res.render("index",{
-        //      "pageamount":Math.ceil(count/20)
-        // });
->>>>>>> 9a19c856773164318923229719d5cd794beb3367
-    });
-
-});
 //获取留言内容
 app.get("/get/message", function (req, res, next) {
     var page = parseInt(req.query.page);
@@ -77,7 +67,6 @@ app.post("/add/message", function (req, res, next) {
 
 
 })
-<<<<<<< HEAD
 
 //删除
 app.get("/delete",function(req,res,next){
@@ -87,14 +76,12 @@ app.get("/delete",function(req,res,next){
         res.redirect("/");
     });
 })
-
-
-
-
-=======
+//登录
+app.post("/login", router.showLogin);
 //注册
 app.post("/regist", router.showRegist);
->>>>>>> 9a19c856773164318923229719d5cd794beb3367
+//上传头像
+app.post("/dosetavatar",urlencodedParser, router.dosetavatar);
 
 
 app.listen(3000);

@@ -26,6 +26,9 @@
         </div>
         <button type="button" id="regist" class="btn  btn-default">注册</button>
     </form>
+
+    <div class="alert alert-danger fail-send" role="alert" style="margin-top：10px;display: none;">该用户名已存在！</div>
+      <div class="alert alert-success suc-send" role="alert" style="margin-top：10px;display: none;">注册成功！</div>
     <!--<button type="button" id="regist" class="btn  btn-default">注册</button>-->
     <!--<button type="button" class="close" id="alertBtn" data-dismiss="alert">-->
         <!--<span aria-hidden="true">&times;</span>-->
@@ -83,13 +86,18 @@
             $("#regist").unbind("click").bind("click", function () {
                 $.post("/regist", {
                     "name": $("#userName").val(),
-                    "title": $("#password").val()
+                    "password": $("#password").val()
 
                 }, function (result) {
-
                     if (result.success) {
-
+                           $(".suc-send").fadeIn();
+                           $(".fail-send").fadeOut();
+                           location.href = '/views/index.html'
+                     
                     }else {
+
+                        $(".fail-send").fadeIn();
+                         $(".suc-send").fadeOut();
 
 
                     }
