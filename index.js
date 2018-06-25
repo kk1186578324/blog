@@ -2,6 +2,8 @@ var express = require("express");
 var app = express();
 var db = require("./model/db.js");
 var formidable = require("formidable");
+var bodyParser = require('body-parser');
+var urlencodedParser = bodyParser.urlencoded(); 
 
 var router = require("./router/router.js")
 
@@ -13,19 +15,17 @@ var ObjectId = require("mongodb").ObjectID;
 //静态
 
 app.use(express.static("./public"));
-//留言板列表
-app.get("/page", function (req, res, next) {
-    db.getAllCount("blog", function (count) {
-        console.log(count)
+// 留言板列表
+app.get("/page",function(req,res,next){
+    db.getAllCount("blog",function(count){
+    	console.log(count)
+    	res.send({
+          "pageamount":Math.ceil(count/6)
+    	});
+    })
+  })
 
 
-        res.send({"pageamount": parseInt(count / 5)})
-        // res.render("index",{
-        //      "pageamount":Math.ceil(count/20)
-        // });
-    });
-
-});
 //获取留言内容
 app.get("/get/message", function (req, res, next) {
     var page = parseInt(req.query.page);
@@ -67,8 +67,21 @@ app.post("/add/message", function (req, res, next) {
 
 
 })
+
+//删除
+app.get("/delete",function(req,res,next){
+    //得到参数
+    var id = req.query.id;
+    db.deleteMany("blog",{"_id":ObjectId(id)},function(err,result){
+        res.redirect("/");
+    });
+})
+//登录
+app.post("/login", router.showLogin);
 //注册
 app.post("/regist", router.showRegist);
+//上传头像
+app.post("/dosetavatar",urlencodedParser, router.dosetavatar);
 
 
 app.listen(3000);

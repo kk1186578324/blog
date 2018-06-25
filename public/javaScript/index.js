@@ -11,6 +11,11 @@ var module = {
      module.initAddMsg();
 
      module.initPageOption();
+     module.initSubmit();
+
+
+     
+     console.log($("#upFile").val())
 
      },
      initPage:function(){
@@ -54,7 +59,7 @@ var module = {
            })
 
      },
-
+//分页
      initPageOption:function(){
      	$("#footer").empty();
      	$.get("/page",function(result){
@@ -74,7 +79,7 @@ var module = {
            	}
      	)
      },
-
+//列表渲染
      initGetMsg:function(page){
      	$.get("/get/message?page="+page,function(result){
            var compiled = _.template($("#content").html());
@@ -104,6 +109,7 @@ var module = {
        
 
      },
+     //添加留言
      initAddMsg:function(){
 
      	$("#addMsg").unbind("click").bind("click",function(){
@@ -125,15 +131,47 @@ var module = {
 
      		})
 
-
-
-
      	})
 
-       
+     },
+     //登录
+     initSubmit:function(){
+
+      $(".submit-btn").unbind("click").bind("click",function(){
+
+              $.post("/login", {
+                    "name": $("#userName").val(),
+                    "password": $("#password").val()
+
+                }, function (result) {
+                    if (result.success) {
+                         
+                     
+                    }else {
+
+                         
+
+
+                    }
+
+                })
+                
+
+
+      })
+
+     },
+     upLoadfile:function(){
+          $("#upFile").unbind("change").bind("change",function(e){
+           // 判断是否为IE浏览器： /msie/i.test(navigator.userAgent) 为一个简单正则
+            var isIE = /msie/i.test(navigator.userAgent) && !window.opera;
+            console.log(e);
 
 
 
+
+          })
+ 
 
      },
      formatterDateTime:function (date) {
