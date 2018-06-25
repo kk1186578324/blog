@@ -15,6 +15,8 @@ var ObjectId = require("mongodb").ObjectID;
 //静态
 
 app.use(express.static("./public"));
+app.use(bodyParser.json({limit:'50mb'}));
+app.use(bodyParser.urlencoded({limit:'50mb',extended:true}));
 // 留言板列表
 app.get("/page",function(req,res,next){
     db.getAllCount("blog",function(count){

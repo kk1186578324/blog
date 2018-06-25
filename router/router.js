@@ -1,4 +1,5 @@
 var db = require("../model/db.js");
+var md5 = require("../model/md5.js")
 var fs = require('fs');
 var formidable = require("formidable");
 var ObjectId = require("mongodb").ObjectID;
@@ -8,7 +9,7 @@ exports.showLogin = function (req, res, next) {
     var form = new formidable.IncomingForm();
     form.parse(req, function (err, fields) {
 
-        db.find("user", {"username": fields.name,"password":fields.password}, function (err, result) {
+        db.find("user", {"username": fields.name,"password": md5(md5(fields.password)+"kai")}, function (err, result) {
 
             console.log(result);
 
@@ -33,11 +34,11 @@ exports.showLogin = function (req, res, next) {
 exports.showRegist = function (req, res, next) {
     var form = new formidable.IncomingForm();
     form.parse(req, function (err, fields) {
-
         db.find("user", {"username": fields.name}, function (err, result) {
 
             console.log(result);
-
+           // var password =  md5(md5(fields.password)+"kai");
+            console.log(fields)
             if(result.length){
                 res.json({
                     "success": false,
@@ -52,6 +53,7 @@ exports.showRegist = function (req, res, next) {
                         res.send({"success": false})
                         return;
                     }
+
                     res.json({"success": true})
 
                 })
@@ -76,7 +78,9 @@ exports.dosetavatar = function (req, res, next) {
     // }
  var base64url = req.body.base64url;
 
- console.log(base64url);
+ console.log( req.body.files);
+
+ // console.log(base64url);
 
 
     // var form = new formidable.IncomingForm();
@@ -84,7 +88,8 @@ exports.dosetavatar = function (req, res, next) {
     // console.log(form);
 
 
-var path = __dirname + "/../avatar"+ Date.now() +'.png';//从app.js级开始找--在我的项目工程里是这样的
+var path = __dirname + "/../avatar/"+ Date.now() +'.png';//从app.js级开始找--在我的项目工程里是这样的
+console.log(path);
 var base64 = base64url.replace(/^data:image\/\w+;base64,/, "");//去掉图片base64码前面部分data:image/png;base64
 var dataBuffer = new Buffer(base64, 'base64'); //把base64码转成buffer对象，
 
