@@ -11,16 +11,16 @@ var ObjectId = require("mongodb").ObjectID;
 //静态
 
 app.use(express.static("./public"));
-//留言板列表
-// app.get("/",function(req,res,next){
-//     db.getAllCount("message",function(count){
-//     	console.log(count)
-//     	res.render("index",{
-//           "pageamount":Math.ceil(count/20)
-//     	});
-//     });
- 
-// });
+// 留言板列表
+app.get("/page",function(req,res,next){
+    db.getAllCount("blog",function(count){
+    	console.log(count)
+    	res.send({
+          "pageamount":Math.ceil(count/6)
+    	});
+    });
+
+});
 //获取留言内容
 app.get("/get/message",function(req,res,next){
  var page = parseInt(req.query.page);
@@ -60,6 +60,15 @@ app.post("/add/message",function(req,res,next){
  
 
 
+})
+
+//删除
+app.get("/delete",function(req,res,next){
+    //得到参数
+    var id = req.query.id;
+    db.deleteMany("blog",{"_id":ObjectId(id)},function(err,result){
+        res.redirect("/");
+    });
 })
 
 
