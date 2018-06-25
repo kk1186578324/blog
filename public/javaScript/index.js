@@ -43,7 +43,7 @@ var module = {
              	nowpage = parseInt($(this).attr("data-page"));
              }
              module.initGetMsg(nowpage);
-             console.log($(this));
+         
 
              for(var i= 0;i<$pageOption.length;i++){
                 if($($pageOption[i]).attr("data-page")==nowpage){
