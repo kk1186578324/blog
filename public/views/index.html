@@ -56,8 +56,11 @@
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="#"><span class="glyphicon glyphicon-bell" aria-hidden="true"></span></a></li>
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                               aria-haspopup="true" aria-expanded="false">登录 <span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" id="userTitle" data-toggle="dropdown" role="button"
+                               aria-haspopup="true" aria-expanded="false">登录
+                                <span class="caret">
+                               </span>
+                           </a>
                             <ul class="dropdown-menu">
                                 <form class="navbar-form navbar-left" role="search">
                                     <div class="form-group">
@@ -341,28 +344,13 @@
     function selectImg(file) {
 
         console.log(file);
-        // if (!file.files || !file.files[0]){
-        //     return;
-        // }
+        if (!file.files || !file.files[0]){
+            return;
+        }
         var reader = new FileReader();
         reader.onload = function (evt) {
             console.log(evt);
             var replaceSrc = evt.target.result;
-
-            $.post("/dosetavatar",{
-               "base64url":replaceSrc,
-        
-            },function(result){
-
-                if(result.success){
-
-                  module.initGetMsg();
-                  module.initPageOption();
-
-                }
-
-            })
-
 
             //更换cropper的图片
             $('#tailoringImg').cropper('replace', replaceSrc,false);//默认false，适应高度，不失真
@@ -415,6 +403,19 @@
         }else{
             var cas = $('#tailoringImg').cropper('getCroppedCanvas');//获取被裁剪后的canvas
             var base64url = cas.toDataURL('image/png'); //转换为base64地址形式
+            $.post("/dosetavatar",{
+                "base64url":base64url
+
+            },function(result){
+
+                if(result.success){
+
+                    module.initGetMsg();
+                    module.initPageOption();
+
+                }
+
+            })
             $("#finalImg").prop("src",base64url);//显示为图片的形式
 
             //关闭裁剪框

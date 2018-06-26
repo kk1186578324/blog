@@ -10,15 +10,29 @@ exports.showIndex = function (req, res, next) {
     //检索数据库，查找此人的头像
     if (req.session.login == "1") {
         //如果登陆了
-
         var username = req.session.username;
-
         var login = true;
+
     } else {
         //没有登陆
         var username = "";  //制定一个空用户名
         var login = false;
     }
+    //已经登陆了，那么就要检索数据库，查登陆这个人的头像
+    db.find("user", {"username": username}, function (err, result) {
+        console.log(result)
+        if (result.length) {
+            res.json({
+                "success": true,
+                "content": result
+            });
+
+        }else {
+            res.json({
+                "success": false
+            });
+        }
+    });
 
 
 }
@@ -135,7 +149,8 @@ exports.dosetavatar = function (req, res, next) {
 
     var base64url = req.body.base64url;
     console.log(req.body.files);
-    var path = __dirname + "/../avatar/" + Date.now() + '.jpg';//从app.js级开始找--在我的项目工程里是这样的
+    var imageName = Date.now() + '.jpg';
+    var path = __dirname + "/../avatar/"+imageName;//从app.js级开始找--在我的项目工程里是这样的
     console.log(path);
     var base64 = base64url.replace(/^data:image\/\w+;base64,/, "");//去掉图片base64码前面部分data:image/png;base64
     var dataBuffer = new Buffer(base64, 'base64'); //把base64码转成buffer对象，
@@ -148,6 +163,12 @@ exports.dosetavatar = function (req, res, next) {
             console.log('写入成功！');
         }
     })
+    //更改数据库当前用户的avatar这个值
+    db.updateMany("user", {"username": req.session.username}, {
+        $set: {"avatar": imageName}
+    }, function (err, results) {
+        res.send("1");
+    });
 
 
 }

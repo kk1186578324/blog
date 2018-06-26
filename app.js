@@ -13,7 +13,7 @@ app.use(session({
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: true,
-    cookie:{maxAge:60000}
+    cookie:{maxAge:60000*60}
 }));
 
 //静态
@@ -27,7 +27,6 @@ app.get("/index",router.showIndex);
 //分页
 app.get("/page",router.showPage);
 //留言列表
-
 app.get("/get/message",router.showMessage);
 //添加留言
 app.post("/add/message", router.addMessage);
@@ -39,6 +38,5 @@ app.post("/login", router.showLogin);
 app.post("/regist", router.showRegist);
 //上传头像
 app.post("/dosetavatar",urlencodedParser, router.dosetavatar);
-
 
 app.listen(3000);
