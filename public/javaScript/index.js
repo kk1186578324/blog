@@ -7,15 +7,20 @@ $(function(){
 var module = {
     
      init:function(){
+
+     $.get("/index",function(result){
+
+                 console.log(result);
+
+             }
+         )
+
+
      module.initGetMsg(1);
      module.initAddMsg();
 
      module.initPageOption();
      module.initSubmit();
-
-
-     
-     console.log($("#upFile").val())
 
      },
      initPage:function(){
@@ -114,7 +119,7 @@ var module = {
 
      	$("#addMsg").unbind("click").bind("click",function(){
      		$.post("/add/message",{
-               "name":$("#userName").val(),
+               "name":$("#name").val(),
                "title":$("#title").val(),
                "content":$("#usercontent").val(),
                "time":module.formatterDateTime(new Date()),
@@ -124,7 +129,7 @@ var module = {
 
      			if(result.success){
 
-                  module.initGetMsg();
+                  module.initGetMsg(1);
                   module.initPageOption();
 
      			}
@@ -142,9 +147,11 @@ var module = {
               $.post("/login", {
                     "name": $("#userName").val(),
                     "password": $("#password").val()
-
                 }, function (result) {
                     if (result.success) {
+                        var data = result.content[0];
+
+                        $("#finalImg").attr("src","../avatar/"+data.avatar)
                          
                      
                     }else {
